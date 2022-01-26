@@ -22,8 +22,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect();
-        // const database = client.db("cars-model");
-        // const carsCollection = database.collection("cars");
+        const database = client.db("growth_arrange");
+        const categoryCollection = database.collection("categories");
         const clientsCollection = database.collection('clients');
         // const carOrdersCollection = database.collection('orderedCars');
         // const clientsAllRating = database.collection('ratings');
@@ -59,6 +59,12 @@ async function run() {
         //     const cars = await cursor.toArray();
         //     res.send(cars);
         // })
+        //get category
+        app.get('/getCategory', async (req, res) => {
+            const cursor = categoryCollection.find({});
+            const category = await cursor.toArray();
+            res.send(category);
+        })
 
         // //get api for all orders of car
         // app.get('/orderedCars/all', async (req, res) => {
@@ -95,6 +101,14 @@ async function run() {
             const client = req.body;
             const result = await clientsCollection.insertOne(client);
             res.json(result);
+        })
+
+        //POST to update category
+        app.post('/addCategory', async (req, res) => {
+            const category = req.body;
+            const result = await categoryCollection.insertOne(category);
+            res.json(result);
+
         })
 
         // //***/== POST API to add ratings ==/***//
