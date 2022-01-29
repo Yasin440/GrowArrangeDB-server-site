@@ -24,6 +24,7 @@ async function run() {
         await client.connect();
         const database = client.db("growth_arrange");
         const categoryCollection = database.collection("categories");
+        const servicesCollection = database.collection("allServices");
         const clientsCollection = database.collection('clients');
         // const carOrdersCollection = database.collection('orderedCars');
         // const clientsAllRating = database.collection('ratings');
@@ -64,6 +65,12 @@ async function run() {
             const cursor = categoryCollection.find({});
             const category = await cursor.toArray();
             res.send(category);
+        })
+        // //get api for services with services
+        app.get('/allServices/:category', async (req, res) => {
+            const category = req.params.category;
+            const result = await servicesCollection.find({ category: category }).sort({ $natural: -1 }).toArray();
+            res.send(result);
         })
 
         // //get api for all orders of car
@@ -109,6 +116,12 @@ async function run() {
             const result = await categoryCollection.insertOne(category);
             res.json(result);
 
+        })
+        //POST Services
+        app.post('/addServices', async (req, res) => {
+            const services = req.body;
+            const result = await servicesCollection.insertOne(services);
+            res.json(result);
         })
 
         // //***/== POST API to add ratings ==/***//
