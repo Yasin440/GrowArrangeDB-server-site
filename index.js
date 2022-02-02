@@ -26,6 +26,7 @@ async function run() {
         const categoryCollection = database.collection("categories");
         const servicesCollection = database.collection("allServices");
         const clientsCollection = database.collection('clients');
+        const orderCollection = database.collection('all_orders');
         // const carOrdersCollection = database.collection('orderedCars');
         // const clientsAllRating = database.collection('ratings');
 
@@ -73,6 +74,22 @@ async function run() {
             res.send(result);
         })
 
+        //get api for a single service with _id
+        app.get('/dashboard/newOrder/:_id', async (req, res) => {
+            const id = req.params._id;
+            const result = await servicesCollection.findOne({ _id: ObjectId(id) });
+            res.json(result);
+        })
+        app.get('/dashboard/newOrder/:title', async (req, res) => {
+            const title = req.params.title;
+            const result = await servicesCollection.findOne({ title: title });
+            res.json(result);
+        })
+        //get all order api
+        app.get('order/allOrder', async (req, res) => {
+            const cursor = orderCollection.find({}).sort({ $natural: -1 }).toArray();
+            res.send(cursor);
+        })
         // //get api for all orders of car
         // app.get('/orderedCars/all', async (req, res) => {
         //     const cursor = carOrdersCollection.find({});
@@ -121,6 +138,12 @@ async function run() {
         app.post('/addServices', async (req, res) => {
             const services = req.body;
             const result = await servicesCollection.insertOne(services);
+            res.json(result);
+        })
+        //post order api
+        app.post('/order/addOrder', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
             res.json(result);
         })
 
@@ -243,7 +266,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('This a Server to Connect "Growth Arrange DB" with backEnd');
+    res.json('This a Server to Connect "Growth Arrange DB" with backEnd');
 })
 app.listen(port, () => {
     console.log('Growth Arrange DB is running on:', port);
