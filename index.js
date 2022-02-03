@@ -73,6 +73,12 @@ async function run() {
             const result = await servicesCollection.find({ category: category }).sort({ $natural: -1 }).toArray();
             res.send(result);
         })
+        // //get api for all order with services
+        app.get('/order/allOrder/:category', async (req, res) => {
+            const category = req.params.category;
+            const result = await orderCollection.find({ category: category }).sort({ $natural: -1 }).toArray();
+            res.send(result);
+        })
 
         //get api for a single service with _id
         app.get('/dashboard/newOrder/:_id', async (req, res) => {
@@ -85,9 +91,10 @@ async function run() {
             const result = await servicesCollection.findOne({ title: title });
             res.json(result);
         })
-        //get all order api
-        app.get('order/allOrder', async (req, res) => {
-            const cursor = orderCollection.find({}).sort({ $natural: -1 }).toArray();
+        //get all order with email api
+        app.get('/order/myOrder/:email', async (req, res) => {
+            const email = req.params.email;
+            const cursor = await orderCollection.find({ email: email }).sort({ $natural: -1 }).toArray();
             res.send(cursor);
         })
         // //get api for all orders of car
