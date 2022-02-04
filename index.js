@@ -97,6 +97,12 @@ async function run() {
             const cursor = await orderCollection.find({ email: email }).sort({ $natural: -1 }).toArray();
             res.send(cursor);
         })
+        //get single order with _id api
+        app.get('/order/getOrder_forEdit/:id', async (req, res) => {
+            const id = req.params.id;
+            const cursor = await orderCollection.findOne({ _id: ObjectId(id) });
+            res.json(cursor);
+        })
         // //get api for all orders of car
         // app.get('/orderedCars/all', async (req, res) => {
         //     const cursor = carOrdersCollection.find({});
