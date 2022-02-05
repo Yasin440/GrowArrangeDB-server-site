@@ -36,17 +36,18 @@ async function run() {
         //     const reviews = await cursor.toArray();
         //     res.send(reviews);
         // })
+
         // //== get api to get a email which is admin==//
-        // app.get('/client/isAdmin/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     const query = { email: email };
-        //     const result = await clientsCollection.findOne(query);
-        //     let isAdmin = false;
-        //     if (result?.role === 'admin') {
-        //         isAdmin = true;
-        //     }
-        //     res.json({ admin: isAdmin });
-        // })
+        app.get('/client/isAdmin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const result = await clientsCollection.findOne(query);
+            let isAdmin = false;
+            if (result?.role === 'admin') {
+                isAdmin = true;
+            }
+            res.json({ admin: isAdmin });
+        })
 
         // //== GET app for 6 cars ==//
         // app.get('/cars', async (req, res) => {
