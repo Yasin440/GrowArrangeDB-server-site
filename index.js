@@ -204,7 +204,22 @@ async function run() {
             res.json(result);
 
         })
+        //update order
+        app.put('/order/getOrder_forEdit/update', async (req, res) => {
+            const order = req.body;
+            const query = { _id: ObjectId(order._id) };
+            const options = { upsert: true };
+            const updateOrder = {
+                $set: {
+                    start_count: order.start_count,
+                    remains: order.remains,
+                    status: order.status
+                }
+            };
+            const result = await orderCollection.updateOne(query, updateOrder, options);
+            res.json(result);
 
+        })
         // //***/== Put api to update client admin role ==/***//
         // app.put('/clients/makeAdmin', async (req, res) => {
         //     const user = req.body;
