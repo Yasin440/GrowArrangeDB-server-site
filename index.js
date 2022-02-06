@@ -80,6 +80,10 @@ async function run() {
             const result = await orderCollection.find({ category: category }).sort({ $natural: -1 }).toArray();
             res.send(result);
         })
+        app.get('/order/allOrder', async (req, res) => {
+            const result = await orderCollection.find({}).sort({ $natural: -1 }).toArray();
+            res.send(result);
+        })
 
         //get api for a single service with _id
         app.get('/dashboard/newOrder/:_id', async (req, res) => {
