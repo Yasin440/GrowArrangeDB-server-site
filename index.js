@@ -81,10 +81,14 @@ async function run() {
             res.send(result);
         })
         app.get('/order/allOrder', async (req, res) => {
-            const result = await orderCollection.find({}).sort({ $natural: -1 }).toArray();
+            const result = await orderCollection.find({}).toArray();
             res.send(result);
         })
-
+        //get all clients api
+        app.get('/user/allUsers', async (req, res) => {
+            const result = await clientsCollection.find({}).toArray();
+            res.send(result);
+        })
         //get api for a single service with _id
         app.get('/dashboard/newOrder/:_id', async (req, res) => {
             const id = req.params._id;
