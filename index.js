@@ -222,7 +222,8 @@ async function run() {
                 $set: {
                     start_count: order.start_count,
                     remains: order.remains,
-                    status: order.status
+                    status: order.status,
+                    payment: order.payment
                 }
             };
             const result = await orderCollection.updateOne(query, updateOrder, options);
