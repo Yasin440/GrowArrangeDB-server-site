@@ -268,12 +268,12 @@ async function run() {
         // })
 
         // //delete api to delete an order from all orders
-        // app.delete('/orderedCars/delete/:_id', async (req, res) => {
-        //     const id = req.params._id;
-        //     const query = { _id: ObjectId(id) };
-        //     const result = await carOrdersCollection.deleteOne(query);
-        //     res.json(result);
-        // })
+        app.delete('/allServices/delete/:_id', async (req, res) => {
+            const id = req.params._id;
+            const query = { _id: ObjectId(id) };
+            const result = await servicesCollection.deleteOne(query);
+            res.json(result);
+        })
         // //delete api to delete one car from all cars
         // app.delete('/all_Cars/delete/:_id', async (req, res) => {
         //     const id = req.params._id;
