@@ -81,7 +81,11 @@ async function run() {
             res.send(result);
         })
         app.get('/order/allOrder', async (req, res) => {
-            const result = await orderCollection.find({}).sort({ $natural: -1 }).toArray();
+            const result = await orderCollection.find({}).toArray();
+            res.send(result);
+        })
+        app.get('/order/lastOrder', async (req, res) => {
+            const result = await orderCollection.find({}).sort({ $natural: -1 }).limit(1).toArray();
             res.send(result);
         })
         //get all clients api
