@@ -27,6 +27,7 @@ async function run() {
         const servicesCollection = database.collection("allServices");
         const clientsCollection = database.collection('clients');
         const orderCollection = database.collection('all_orders');
+        const ticketsCollection = database.collection('tickets');
         // const carOrdersCollection = database.collection('orderedCars');
         // const clientsAllRating = database.collection('ratings');
 
@@ -74,7 +75,7 @@ async function run() {
             const result = await servicesCollection.find({ category: category }).sort({ $natural: -1 }).toArray();
             res.send(result);
         })
-        // //get api for all order with services
+        //get api for all order with services
         app.get('/order/allOrder/:category', async (req, res) => {
             const category = req.params.category;
             const result = await orderCollection.find({ category: category }).sort({ $natural: -1 }).toArray();
@@ -86,6 +87,20 @@ async function run() {
         })
         app.get('/order/lastOrder', async (req, res) => {
             const result = await orderCollection.find({}).sort({ $natural: -1 }).limit(1).toArray();
+            res.send(result);
+        })
+        //get tickets
+        app.get('/tickets/allTickets/all', async (req, res) => {
+            const result = await ticketsCollection.find({}).sort({ $natural: -1 }).toArray();
+            res.send(result);
+        })
+        app.get('/tickets/allTickets/:email', async (req, res) => {
+            const email = req.params.email;
+            const result = await ticketsCollection.find({ email: email }).sort({ $natural: -1 }).toArray();
+            res.send(result);
+        })
+        app.get('/tickets/lastTickets', async (req, res) => {
+            const result = await ticketsCollection.find({}).sort({ $natural: -1 }).limit(1).toArray();
             res.send(result);
         })
         //get all clients api
@@ -173,6 +188,13 @@ async function run() {
             res.json(result);
         })
 
+        //post tickets api
+        app.post('/tickets/addTickets', async (req, res) => {
+            const order = req.body;
+            const result = await ticketsCollection.insertOne(order);
+            res.json(result);
+        })
+
         // //***/== POST API to add ratings ==/***//
 
         // app.post('/ratings', async (req, res) => {
@@ -206,6 +228,19 @@ async function run() {
         //     const result = await carOrdersCollection.insertOne(carOrders);
         //     res.json(result)
         // })
+        //update clients balance
+        app.put('/clients/update/balance', async (req, res) => {
+            const user = req.body;
+            const query = { email: user.email };
+            const options = { upsert: true };
+            const updateOrder = {
+                $set: {
+                    balance: user.balance
+                }
+            };
+            const result = await clientsCollection.updateOne(query, updateOrder, options);
+            res.json(result);
+        })
 
         //------put client through gmail or other authentication
         app.put('/clients', async (req, res) => {
@@ -232,7 +267,6 @@ async function run() {
             };
             const result = await orderCollection.updateOne(query, updateOrder, options);
             res.json(result);
-
         })
         // //***/== Put api to update client admin role ==/***//
         // app.put('/clients/makeAdmin', async (req, res) => {
@@ -277,6 +311,13 @@ async function run() {
             const id = req.params._id;
             const query = { _id: ObjectId(id) };
             const result = await servicesCollection.deleteOne(query);
+            res.json(result);
+        })
+        //delete tickets with id
+        app.delete('/allTickets/delete/:_id', async (req, res) => {
+            const id = req.params._id;
+            const query = { _id: ObjectId(id) };
+            const result = await ticketsCollection.deleteOne(query);
             res.json(result);
         })
         // //delete api to delete one car from all cars
