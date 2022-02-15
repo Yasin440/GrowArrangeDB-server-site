@@ -108,6 +108,12 @@ async function run() {
             const result = await clientsCollection.find({}).toArray();
             res.send(result);
         })
+        //get clients email api
+        app.get('/user/allUsers/:email', async (req, res) => {
+            const email = req.params.email;
+            const result = await clientsCollection.findOne({ email: email });
+            res.send(result);
+        })
         //get api for a single service with _id
         app.get('/dashboard/newOrder/:_id', async (req, res) => {
             const id = req.params._id;
@@ -229,13 +235,14 @@ async function run() {
         //     res.json(result)
         // })
         //update clients balance
-        app.put('/clients/update/balance', async (req, res) => {
+        app.post('/clients/update/balance', async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
             const options = { upsert: true };
             const updateOrder = {
                 $set: {
-                    balance: user.balance
+                    balance: user.balance,
+                    currency: "taka"
                 }
             };
             const result = await clientsCollection.updateOne(query, updateOrder, options);
@@ -267,6 +274,20 @@ async function run() {
             };
             const result = await orderCollection.updateOne(query, updateOrder, options);
             res.json(result);
+        })
+        //update ticket status
+        app.put('/update/ticket/status/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const update = {
+                $set: {
+                    status: "completed"
+                },
+            };
+            const result = await ticketsCollection.updateOne(query, update, options);
+            res.json(result);
+            console.log(result);
         })
         // //***/== Put api to update client admin role ==/***//
         // app.put('/clients/makeAdmin', async (req, res) => {
