@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const ObjectId = require('mongodb').ObjectId;
 const { MongoClient } = require("mongodb");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 // const fileUpload = require('express-fileupload');
 require("dotenv").config();
 //******script api secret key******//
@@ -48,6 +50,37 @@ async function run() {
                 isAdmin = true;
             }
             res.json({ admin: isAdmin });
+        })
+        //register
+        app.post('/users/register', async (req, res) => {
+            try {
+                const salt = await bcrypt.genSalt()
+                const hashedPassword = await bcrypt.hash(req.body.password, salt)
+                const user = { email: req.body.email, password: hashedPassword }
+                const result = await clientsCollection.insertOne(user);
+                res.send(result)
+                res.status(201).send()
+            } catch {
+                res.status(500).send()
+            }
+        })
+        //login api
+        app.post('/users/login', async (req, res) => {
+            const users = await clientsCollection.find({}).toArray();
+            console.log(users);
+            const found = users.find(user => user.email = req.body.email);
+            if (found == 'undefined') {
+                return res.status(400).send('Cannot find user');
+            }
+            try {
+                if (await bcrypt.compare(req.body.password, found.password)) {
+                    res.json({ message: 'Login Successful' })
+                } else {
+                    res.json({ error: 'Invalid email or password' })
+                }
+            } catch {
+                res.status(500).send()
+            }
         })
 
         // //== GET app for 6 cars ==//
