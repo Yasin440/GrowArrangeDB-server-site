@@ -207,6 +207,16 @@ async function run() {
             res.json(result);
         })
 
+        //------put client through gmail or other authentication
+        app.put('/clients', async (req, res) => {
+            const client = req.body;
+            const query = { email: client.email };
+            const options = { upsert: true };
+            const updateClient = { $set: client };
+            const result = await clientsCollection.updateOne(query, updateClient, options);
+            res.json(result);
+
+        })
         //POST to update category
         app.post('/addCategory', async (req, res) => {
             const category = req.body;
@@ -282,16 +292,6 @@ async function run() {
             res.json(result);
         })
 
-        //------put client through gmail or other authentication
-        app.put('/clients', async (req, res) => {
-            const client = req.body;
-            const query = { email: client.email };
-            const options = { upsert: true };
-            const updateClient = { $set: client };
-            const result = await clientsCollection.updateOne(query, updateClient, options);
-            res.json(result);
-
-        })
         //update order
         app.put('/order/getOrder_forEdit/update', async (req, res) => {
             const order = req.body;
